@@ -1,18 +1,30 @@
 package com.example.chris.customsnackbar.view
 
-import android.content.Context
-import android.support.constraint.ConstraintLayout
-import android.util.AttributeSet
+import android.support.design.widget.BaseTransientBottomBar
+import android.support.v4.content.ContextCompat
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.example.chris.customsnackbar.R
+import java.lang.RuntimeException
 
-class CustomSnackBar @JvmOverloads constructor(
-    context: Context,
-    attrs: AttributeSet? = null,
-    defStyleAttr: Int = 0
-) : ConstraintLayout(context, attrs, defStyleAttr) {
+class CustomSnackBar(parent: ViewGroup, content: SnackBarView)
+    : BaseTransientBottomBar<CustomSnackBar>(parent, content, content) {
 
     init {
-        View.inflate(context, R.layout.view_bottom, this)
+        getView().setBackgroundColor(ContextCompat.getColor(view.context, android.R.color.transparent))
+        getView().setPadding(0, 0, 0, 0)
+    }
+
+    companion object {
+        fun make(view: View): CustomSnackBar {
+            val parent = view.findSuitableParent() ?: throw RuntimeException("error")
+
+            val customView = LayoutInflater.from(view.context).inflate(
+                R.layout.include_snackbar, parent, false
+            ) as SnackBarView
+
+            return CustomSnackBar(parent, customView)
+        }
     }
 }
